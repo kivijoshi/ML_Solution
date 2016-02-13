@@ -66,7 +66,13 @@ def sgd_momentum(w, dw, config=None):
   # TODO: Implement the momentum update formula. Store the updated value in   #
   # the next_w variable. You should also use and update the velocity v.       #
   #############################################################################
-  pass
+  next_w = w
+  lr = config['learning_rate']
+  mu = config.get('momentum')
+  # momentun
+  v =  v * mu  - lr * dw
+  v = v.reshape(next_w.shape)
+  next_w += v
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
@@ -100,11 +106,23 @@ def rmsprop(x, dx, config=None):
   # in the next_x variable. Don't forget to update cache value stored in      #  
   # config['cache'].                                                          #
   #############################################################################
-  pass
+  next_x = x
+  decay_rate = config['decay_rate']
+  cache = config['cache']
+  learning_rate = config["learning_rate"]
+  eps = config['epsilon']
+  
+  cache = decay_rate * cache + (1 - decay_rate) * dx**2
+  
+  cache = cache.reshape(next_x.shape)
+  dx = dx.reshape(next_x.shape)
+  next_x += - learning_rate * dx / (np.sqrt(cache) + eps)
+  
+  config['cache'] = cache
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
-
+  
   return next_x, config
 
 
@@ -137,7 +155,25 @@ def adam(x, dx, config=None):
   # the next_x variable. Don't forget to update the m, v, and t variables     #
   # stored in config.                                                         #
   #############################################################################
-  pass
+  next_x = x
+  beta1 = config['beta1']
+  beta2 = config['beta1']
+  eps = config['epsilon']
+  m = config['m']
+  v = config['v']
+  learning_rate = config['learning_rate']
+  
+  m = beta1*m + (1-beta1)*dx
+  v = beta2*v + (1-beta2)*(dx**2)
+  
+  m = m.reshape(next_x.shape)
+  v = v.reshape(next_x.shape)
+  
+  next_x += - learning_rate * m / (np.sqrt(v) + eps)
+  
+  config['m'] = m
+  config['v'] = v
+  
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################

@@ -50,7 +50,7 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-os.chdir("D:/LocalHome/joshik/Downloads/ML_My-Solutions-master/winter1516_assignment2/assignment2")
+os.chdir("C:/Users/Abhishek/Desktop/ML_Solution/ML_My-Solutions-master/winter1516_assignment2/assignment2")
 from cs231n.classifiers.fc_net import *
 from cs231n.data_utils import get_CIFAR10_data
 from cs231n.gradient_check import eval_numerical_gradient, eval_numerical_gradient_array
@@ -498,7 +498,7 @@ solvers = {}
 for update_rule in ['sgd', 'sgd_momentum']:
   print 'running with ', update_rule
   model = FullyConnectedNet([100, 100, 100, 100, 100], weight_scale=5e-2)
-
+  
   solver = Solver(model, small_data,
                   num_epochs=5, batch_size=100,
                   update_rule=update_rule,
