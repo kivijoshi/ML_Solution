@@ -185,13 +185,15 @@ class FullyConnectedNet(object):
     self.params['W1'] = weight_scale * np.random.randn(input_dim, hidden_dims[0])
     self.params['b1'] = np.zeros(hidden_dims[0])
     
+    i=0
     for i in range(0,(len(hidden_dims)-1)):
         k = i +2
         StrW = 'W'+str(k)
         Strb = 'b'+str(k)
         self.params[StrW] = weight_scale * np.random.randn(hidden_dims[i], hidden_dims[i+1])
         self.params[Strb] = np.zeros(hidden_dims[i+1])
-    i = i+1
+    if(len(hidden_dims)>1):
+        i = i+1
     StrW = 'W'+str(i+2)
     Strb = 'b'+str(i+2)
     self.params[StrW] = weight_scale * np.random.randn(hidden_dims[i], num_classes)
@@ -216,7 +218,7 @@ class FullyConnectedNet(object):
     # pass of the second batch normalization layer, etc.
     self.bn_params = []
     if self.use_batchnorm:
-      self.bn_params = [{'mode': 'train'} for i in xrange(self.num_layers - 1)]
+      self.bn_params = [{'mode': 'train'} for g in xrange(self.num_layers - 1)]
     
     # Cast all parameters to the correct datatype
     for k, v in self.params.iteritems():

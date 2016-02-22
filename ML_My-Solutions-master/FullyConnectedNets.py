@@ -675,7 +675,22 @@ best_model = None
 # batch normalization and dropout useful. Store your best model in the         #
 # best_model variable.                                                         #
 ################################################################################
-pass
+learning_rates = [1e-3]
+regularization_strengths = [0.1]
+result={}
+for lerRate in learning_rates:
+    for regStrength in regularization_strengths:
+        
+        solver = Solver(model, data,
+                  num_epochs=10, batch_size=50,
+                  update_rule='adam',
+                  optim_config={
+                    'learning_rate': 1e-3,
+                  },
+                  verbose=False, print_every=200)
+        
+        solver.train()
+        solver.predict()
 ################################################################################
 #                              END OF YOUR CODE                                #
 ################################################################################
