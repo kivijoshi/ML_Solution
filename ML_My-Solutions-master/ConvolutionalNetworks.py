@@ -13,7 +13,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-os.chdir("C:/Users/Abhishek/Desktop/ML_Solution/ML_My-Solutions-master/winter1516_assignment2/assignment2")
+os.chdir("D:/LocalHome/joshik/Downloads/ML_Solution/ML_My-Solutions-master/winter1516_assignment2/assignment2")
 from cs231n.classifiers.cnn import *
 from cs231n.data_utils import get_CIFAR10_data
 from cs231n.gradient_check import eval_numerical_gradient_array, eval_numerical_gradient
