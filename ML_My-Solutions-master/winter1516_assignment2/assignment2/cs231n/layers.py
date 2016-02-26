@@ -457,13 +457,14 @@ def conv_forward_naive(x, w, b, conv_param):
   out = np.zeros([3,3,2,2,4,4])
   for n in range(N):
       for f in range(F):
+          xnew = np.zeros([C,(H+(2*conv_param['pad'])),(W+(2*conv_param['pad']))])
           for c in range(C):
-              xnew = np.pad(x[n][c],conv_param['pad'],'constant')
-              l = 0
-              for i in range(Hdash):              
-                  l = l + (i*conv_param['stride']) 
-                  Xnew = xnew[range(l,l+HH),:][:,range(l,l+HH)]
-                  out[n][f][c][Hdash].append(w[f][c]*Xnew + b[f])	  
+              xnew[c] = np.pad(x[n][c],conv_param['pad'],'constant')
+          l = 0
+          for i in range(Hdash):
+              l = l + (i*conv_param['stride']) 
+              Xnew = xnew[:][range(l,l+HH),:][:,range(l,l+HH)]
+              out[n][f][Hdash].append(w[f]*Xnew + b[f])	
   print(out)
   #############################################################################
   #                             END OF YOUR CODE                              #
