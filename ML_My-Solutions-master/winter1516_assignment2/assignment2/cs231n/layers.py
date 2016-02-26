@@ -454,17 +454,28 @@ def conv_forward_naive(x, w, b, conv_param):
   N, C, H, W = x.shape
   F,C,HH,WW = w.shape
   Hdash = 1 + ((H + 2 * conv_param['pad'] - HH) / conv_param['stride'])
-  out = np.zeros([3,3,2,2,4,4])
-  for n in range(N):
-      for f in range(F):
+  out = np.zeros([N,F,Hdash,Hdash])
+  for n in xrange(N):
+      for f in xrange(F):
           xnew = np.zeros([C,(H+(2*conv_param['pad'])),(W+(2*conv_param['pad']))])
-          for c in range(C):
+          for c in xrange(C):
               xnew[c] = np.pad(x[n][c],conv_param['pad'],'constant')
           l = 0
-          for i in range(Hdash):
-              l = l + (i*conv_param['stride']) 
-              Xnew = xnew[:][range(l,l+HH),:][:,range(l,l+HH)]
-              out[n][f][Hdash].append(w[f]*Xnew + b[f])	
+          wi = 0
+          i = 0
+          for i in xrange(Hdash):
+              l = i*conv_param['stride']
+              j=0
+              wi =0
+              for j in xrange(Hdash):                  
+                  wi = j*conv_param['stride']
+                  if((l+HH) > 205):
+                      print "error"
+                  if((wi+WW) > 205):
+                      print "error"
+                  Xnew = xnew[:,xrange(l,l+HH),:][:,:,xrange(wi,wi+WW)]
+                  temps = w[f]*(Xnew)
+                  out[n][f][i][j] = np.sum(temps) + b[f]
   print(out)
   #############################################################################
   #                             END OF YOUR CODE                              #
