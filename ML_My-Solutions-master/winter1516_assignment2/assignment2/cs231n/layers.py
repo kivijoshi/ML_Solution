@@ -469,10 +469,6 @@ def conv_forward_naive(x, w, b, conv_param):
               wi =0
               for j in xrange(Hdash):                  
                   wi = j*conv_param['stride']
-                  if((l+HH) > 205):
-                      print "error"
-                  if((wi+WW) > 205):
-                      print "error"
                   Xnew = xnew[:,xrange(l,l+HH),:][:,:,xrange(wi,wi+WW)]
                   temps = w[f]*(Xnew)
                   out[n][f][i][j] = np.sum(temps) + b[f]
@@ -501,7 +497,43 @@ def conv_backward_naive(dout, cache):
   #############################################################################
   # TODO: Implement the convolutional backward pass.                          #
   #############################################################################
-  pass
+  x, w, b, conv_param = cache
+
+  N, F, H_R, W_R = dout.shape
+  N, C, H, W = x.shape
+  F, C, HH, WW = w.shape
+  P = conv_param["pad"]
+  S = conv_param["stride"]
+  x_pad = np.lib.pad(x,((0,0),(0,0), (P,P), (P,P)), 'constant', constant_values=0)
+
+  dx = np.zeros(x_pad.shape)
+  dw = np.zeros(w.shape)
+  db = np.zeros(b.shape)
+
+  # print "W,F,P,S,H_R,W_R: ",W,F,P,S,H_R,W_R
+  # print "dout.shape: "+str(dout.shape)
+
+  for n in xrange(N): #data
+    for depth in xrange(F): #depth
+      for r in xrange(0,H,S): #row
+        for c in xrange(0,W,S): #column
+          dx[n,:,r:r+HH,c:c+WW] += w[depth,:,:,:] * dout[n,depth,r/S,c/S]
+
+  #deleting padded rows
+  delete_rows    = range(P) + range(H+P,H+2*P,1)
+  delete_columns = range(P) + range(W+P,W+2*P,1)
+
+  dx = np.delete(dx, delete_rows, axis=2)     #height
+  dx = np.delete(dx, delete_columns, axis=3)  #width
+
+  for n in xrange(N): #data
+    for depth in xrange(F): #depth
+      for r in xrange(H_R): #row
+        for c in xrange(W_R): #column
+          dw[depth,:,:,:] += x_pad[n,:,r*S:r*S+HH,c*S:c*S+WW] * dout[n,depth,r,c]
+
+  for depth in range(F):
+    db[depth] = np.sum(dout[:, depth, :, :])
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
